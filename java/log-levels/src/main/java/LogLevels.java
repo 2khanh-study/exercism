@@ -1,12 +1,12 @@
 public class LogLevels {
-    
+
     public static String message(String logLine) {
         int colonIndex = logLine.indexOf(":");
 
-        if (colonIndex == -1) {
-            return "No message";
+        if (colonIndex != -1 && colonIndex > 0) {
+            return logLine.substring(colonIndex + 1).trim();
         }
-        return logLine.substring(colonIndex + 1).trim();
+        return "INVALID_MESSAGE";
     }
 
     public static String logLevel(String logLine) {
@@ -17,22 +17,14 @@ public class LogLevels {
         if (logLine.contains("ERROR"))
             return "error";
 
-        return "Invalid level!";
+        return "INVALID_LEVEL";
     }
 
     public static String reformat(String logLine) {
-        String infoSuffix = " (info)";
-        String warningSuffix = " (warning)";
-        String errorSuffix = " (error)";
-
-        if (logLine.contains("INFO"))
-            return message(logLine).concat(infoSuffix);
-        if (logLine.contains("WARNING"))
-            return message(logLine).concat(warningSuffix);
-        if (logLine.contains("ERROR"))
-            return message(logLine).concat(errorSuffix);
-
-        return "Invalid format!";
+        if (message(logLine).equalsIgnoreCase("INVALID_MESSAGE")
+                && logLevel(logLine).equalsIgnoreCase("INVALID_LEVEL")) {
+            return "INVALID_FORMAT";
+        }
+        return String.format("%s (%s)", message(logLine), logLevel(logLine));
     }
-
 }
